@@ -1,7 +1,7 @@
 # 燈具規格快速比較表：實作計劃（v2，所有問題已確認）
 
 > 狀態：**M1–M6 全部完成，網站已上線** https://kuperss.github.io/lighting-comparison-tool/
-> 計劃之後的變更（官網資料整合、品牌配色、Logo）記錄在上層的 `CLAUDE.md`。
+> 計劃之後的變更（官網資料整合、品牌配色、Logo）記錄在上層的 `AGENTS.md`。
 
 ---
 
