@@ -1,0 +1,8 @@
+[
+  { "id": "downlight", "label": "崁燈", "icon": "downlight", "sections": ["崁燈"] },
+  { "id": "can", "label": "筒燈", "icon": "can", "sections": ["筒燈"] },
+  { "id": "track", "label": "投射燈/軌道燈", "icon": "track", "sections": ["軌道燈具系統"] },
+  { "id": "panel", "label": "平板燈", "icon": "panel", "nameIncludes": ["平板"] },
+  { "id": "ceiling", "label": "吸頂燈", "icon": "ceiling", "sections": ["單色與調光調色吸頂燈"] },
+  { "id": "strip", "label": "軟條燈", "icon": "strip", "sections": ["軟條燈與霓虹軟條燈"] }
+]

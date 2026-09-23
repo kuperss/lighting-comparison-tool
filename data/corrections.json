@@ -1,0 +1,8 @@
+[
+  { "model": "D-CEX45NSW", "field": "power_w", "from": 3, "to": 45, "note": "使用者確認正確為 45W" },
+  { "model": "D-CEX45NSW", "field": "luminous_flux_lm", "from": 30, "to": null, "note": "原值不可信，待佐證資料" },
+  { "model": "D-CEC24DSW-LW", "field": "power_w", "from": 2, "to": 24, "note": "使用者確認正確為 24W" },
+  { "model": "D-CEC24DSW-LW", "field": "luminous_flux_lm", "from": 150, "to": null, "note": "原值不可信，待佐證資料" },
+  { "model": "D-CEC24DSW", "field": "power_w", "from": null, "to": 24, "note": "使用者確認正確為 24W" },
+  { "model": "D-CEC24NSW-LW", "field": "power_w", "from": null, "to": 24, "note": "使用者確認正確為 24W" }
+]

@@ -34,3 +34,9 @@ Thumbs.db
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea/
+
+# 測試與資料檢查產出
+test-results/
+playwright-report/
+data-report.md
+src/data/catalog.json

@@ -1,0 +1,22 @@
+{
+  "file": "舞光商業空間照明專刊_正式產品資料庫_v1.0.json",
+  "content_sha256": "a3c5763df6197edce0cfbcaf3f0267e6bf4e28fdac0d929cdfa1bd6e990e0f94",
+  "record_count": 887,
+  "price_list_sku_count": 882,
+  "body_only_accessory_count": 5,
+  "reference_code_count": 5,
+  "duplicate_model_count": 0,
+  "null_product_name_count": 0,
+  "canonical_garbled_text_count": 0,
+  "needs_review_count": 0,
+  "numeric_price_count": 769,
+  "not_listed_price_count": 118,
+  "body_only_accessory_models": [
+    "LED-T5BA-PCDR2",
+    "WTRF6101HS",
+    "WTRF6101WS",
+    "WTRF6801HS",
+    "WTRF6801WS"
+  ],
+  "validation": "PASS"
+}
