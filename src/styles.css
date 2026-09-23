@@ -51,14 +51,14 @@ h1, h2, h3, h4, p { margin: 0; }
 .site-head__inner, .tabs__inner, .page, .site-foot { max-width: var(--page); margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
 .site-head__inner { height: var(--head-h); display: flex; align-items: center; gap: 24px; }
 .brand { display: flex; align-items: center; gap: 14px; }
-.brand img { height: 28px; }
+.brand img { height: 30px; width: auto; display: block; }
 .brand__word { display: flex; align-items: center; gap: 8px; color: var(--brand-blue); }
 .brand__mark { width: 26px; height: 26px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: var(--brand-grad); box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.12); }
 .brand__word b { font-size: 21px; letter-spacing: 0.1em; font-weight: 700; }
 .brand__word small { font-size: 15px; letter-spacing: 0.14em; font-weight: 700; }
 .brand__site { font-size: 13px; color: var(--ink-2); padding-left: 14px; border-left: 1px solid var(--line); }
 .site-nav { margin-left: auto; display: flex; gap: 22px; font-size: 14px; }
-.site-nav button { color: var(--ink-2); padding: 4px 0; border-bottom: 2px solid transparent; }
+.site-nav button { white-space: nowrap; color: var(--ink-2); padding: 4px 0; border-bottom: 2px solid transparent; }
 .site-nav button.is-on { color: var(--ink); border-color: var(--brand-orange); }
 .tabs { border-top: 1px solid var(--line-soft); background: #fff; }
 .tabs__inner { display: flex; gap: 28px; overflow-x: auto; scrollbar-width: none; }
@@ -309,6 +309,9 @@ h1, h2, h3, h4, p { margin: 0; }
 @media (max-width: 760px) {
   :root { --gutter: 16px; font-size: 14px; }
   .brand__site { display: none; }
+  .brand img { height: 18px; }
+  .site-head__inner { gap: 12px; }
+  .site-nav { gap: 12px; font-size: 13px; }
   .site-nav { gap: 16px; }
   .tabs__inner { gap: 20px; }
   .page { padding-top: 24px; }

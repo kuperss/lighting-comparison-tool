@@ -2,6 +2,6 @@
   "brand": "舞光",
   "brandEn": "DANCELIGHT",
   "siteName": "燈具規格比較",
-  "logo": null,
+  "logo": "./logo.png",
   "maxCompare": 4
 }
