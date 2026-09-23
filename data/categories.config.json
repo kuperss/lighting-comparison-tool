@@ -1,8 +1,8 @@
 [
-  { "id": "downlight", "label": "崁燈", "icon": "downlight", "sections": ["崁燈"] },
-  { "id": "can", "label": "筒燈", "icon": "can", "sections": ["筒燈"] },
-  { "id": "track", "label": "投射燈/軌道燈", "icon": "track", "sections": ["軌道燈具系統"] },
-  { "id": "panel", "label": "平板燈", "icon": "panel", "nameIncludes": ["平板"] },
-  { "id": "ceiling", "label": "吸頂燈", "icon": "ceiling", "sections": ["單色與調光調色吸頂燈"] },
-  { "id": "strip", "label": "軟條燈", "icon": "strip", "sections": ["軟條燈與霓虹軟條燈"] }
+  {"id": "downlight", "label": "崁燈", "icon": "downlight", "sections": ["崁燈"], "officialCategories": ["一體化崁燈"]},
+  {"id": "can", "label": "筒燈", "icon": "can", "sections": ["筒燈"], "officialCategories": ["一體化筒燈"]},
+  {"id": "track", "label": "投射燈/軌道燈", "icon": "track", "sections": ["軌道燈具系統"], "officialCategories": ["標準軌道燈", "現代磁吸軌道燈", "柔性軌道燈", "吸頂軌道燈"]},
+  {"id": "panel", "label": "平板燈", "icon": "panel", "nameIncludes": ["平板"], "officialCategories": ["LED平板燈/面板燈"]},
+  {"id": "ceiling", "label": "吸頂燈", "icon": "ceiling", "sections": ["單色與調光調色吸頂燈"], "officialCategories": ["一體化吸頂燈"]},
+  {"id": "strip", "label": "軟條燈", "icon": "strip", "sections": ["軟條燈與霓虹軟條燈"], "officialCategories": ["室內LED軟條燈/鋁槽燈", "室外防水軟條燈"]}
 ]

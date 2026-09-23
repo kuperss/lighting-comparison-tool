@@ -210,7 +210,8 @@ export default function App() {
 
       <footer className="site-foot">
         <span>
-          資料來源：{catalog.source.name} v{catalog.source.version} · 驗證日期 {catalog.source.verifiedDate}
+          資料來源：{catalog.source.official ? `舞光官網（${catalog.source.official.date}）、` : ''}
+          {catalog.source.name} v{catalog.source.version}
         </span>
         <span>規格與牌價以型錄為準，如有異動以原廠公告為準。</span>
       </footer>

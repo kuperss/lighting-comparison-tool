@@ -199,8 +199,14 @@ function ColumnHead({ index, entry, category, open, onToggle, pickerEl, actions 
       <FinishPicker group={group} sku={sku} onSelect={(finish) => actions.switchSku(index, { finish })} />
       <div className="col__price">{fmtPrice(sku.price)}</div>
       <div className="col__model">
-        {sku.model} · 型錄 P.{sku.catalogPage ?? '—'}
+        {sku.model}
+        {sku.catalogPage ? ` · 型錄 P.${sku.catalogPage}` : ''}
       </div>
+      {sku.url && (
+        <a className="col__link" href={sku.url} target="_blank" rel="noopener noreferrer">
+          官網產品頁 ›
+        </a>
+      )}
     </div>
   );
 }
@@ -246,7 +252,7 @@ function EmptyCompare({ category, slots, picker, setPicker, pickerEl, actions })
 export function Notes() {
   return (
     <ul className="notes">
-      <li>規格以型錄資料為準；「—」表示型錄未提供。</li>
+      <li>規格以舞光官網為準，官網未列者採用型錄資料；「—」表示兩者皆未提供。</li>
       <li>光斑直徑 = 2 × 距離 × tan(發光角度 ÷ 2)，為幾何換算值，實際照明效果依現場而定。</li>
       <li>「調光 / 控制」依品名標示整理；† 表示該數值已依人工確認修正。</li>
     </ul>

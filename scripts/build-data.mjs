@@ -28,8 +28,11 @@ let images = {};
 if (existsSync(resolve(dataDir, 'images.json'))) images = { ...images, ...parseImages(read('images.json'), 'json') };
 if (existsSync(resolve(dataDir, 'images.csv'))) images = { ...images, ...parseImages(read('images.csv'), 'csv') };
 
+const official = readJson('source/official-db.json', null);
+
 const result = buildCatalog({
   src,
+  official,
   categories: readJson('categories.config.json', []),
   corrections: readJson('corrections.json', []),
   featured: readJson('featured.json', []),
@@ -50,6 +53,13 @@ if (result.catalog) {
 lines.push(`## 錯誤（${result.errors.length}）`, '', ...(result.errors.length ? result.errors.map((e) => `- ${e}`) : ['無']), '');
 if (result.warnings) {
   lines.push(`## 提醒（${result.warnings.length}）`, '', ...(result.warnings.length ? result.warnings.map((e) => `- ${e}`) : ['無']), '');
+  const FIELD = { power_w: '瓦數', luminous_flux_lm: '光通量', color_temperature_k: '色溫', cri_ra: '演色性', beam_angle_deg: '發光角度', cutout: '開孔', ip_rating: '防水等級' };
+  lines.push(`## 型錄與官網不一致，已採用官網（${result.conflicts.length}）`, '');
+  if (result.conflicts.length) {
+    lines.push('| 型號 | 欄位 | 型錄 | 官網（採用） |', '|---|---|---|---|');
+    for (const c of result.conflicts) lines.push(`| ${c.model} | ${FIELD[c.field] ?? c.field} | ${JSON.stringify(c.catalog)} | ${JSON.stringify(c.official)} |`);
+  } else lines.push('無');
+  lines.push('');
   lines.push(`## 沒有圖片網址的型號（${result.missingImages.length}）`, '', result.missingImages.join('、') || '無', '');
 }
 writeFileSync(resolve(root, 'data-report.md'), lines.join('\n'));

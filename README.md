@@ -10,14 +10,15 @@
 
 非工程人員請看 **[docs/資料更新說明.md](docs/資料更新說明.md)**。
 
-簡單說：用新版 JSON 取代 `data/source/products-db.json`，在 GitHub 網頁上 commit 到 `main`，約 1–2 分鐘後網站就會更新。資料有錯誤時不會發布，錯誤訊息會出現在 Actions 頁面。
+簡單說：用新版 JSON 取代 `data/source/` 裡的型錄或官網資料庫，在 GitHub 網頁上 commit 到 `main`，約 1–2 分鐘後網站就會更新。資料有錯誤時不會發布，錯誤訊息會出現在 Actions 頁面。
 
 ## 資料檔（`data/`）
 
 | 檔案 | 用途 |
 |---|---|
-| `source/products-db.json` | 型錄資料庫，改版時**整份替換**（檔名固定） |
-| `categories.config.json` | 網站類別 ↔ 型錄分類（`sections`）或品名關鍵字（`nameIncludes`） |
+| `source/products-db.json` | 型錄資料庫（牌價、型錄頁碼），型錄改版時**整份替換**（檔名固定） |
+| `source/official-db.json` | 官網資料庫（規格、圖片、壽命、產品頁），官網更新時**整份替換**；兩邊衝突時**以官網為準** |
+| `categories.config.json` | 網站類別 ↔ 型錄分類（`sections`）、品名關鍵字（`nameIncludes`）、官網分類（`officialCategories`） |
 | `corrections.json` | 人工修正：`{ model, field, from, to, note }`，改版後仍會套用 |
 | `images.json` 或 `images.csv` | 型號 → 官網圖片網址（JSON：`{"D-9DOB9N": "https://…"}`；CSV：`型號,網址`） |
 | `featured.json` | 指定熱門比較（選填）：`[{ "category": "downlight", "title": "…", "models": ["…"] }]` |
@@ -26,7 +27,7 @@
 建置時的檢查：
 
 - **停止建置：** 格式錯誤、型號重複、類別少於 2 款。
-- **只提醒、照常建置：** 其他提醒與缺圖清單寫在 `data-report.md`，可在 Actions 頁面下載。
+- **只提醒、照常建置：** 型錄與官網不一致的清單（已採用官網）、其他提醒與缺圖清單寫在 `data-report.md`，可在 Actions 頁面下載。
 
 ## 開發
 

@@ -16,11 +16,11 @@ export const SECTIONS = [
 export const ROWS = [
   {
     id: 'power', section: 'light', label: '消耗功率', corrected: 'power_w',
-    get: (s) => (s.power.length ? v(`${s.power.join(' / ')}W${s.perMeter ? '/m' : ''}`) : none),
+    get: (s) => (s.power.length ? v(`${s.power.join(s.powerRange ? '~' : ' / ')}W${s.perMeter ? '/m' : ''}`) : none),
   },
   {
     id: 'lm', section: 'light', label: '光通量', corrected: 'luminous_flux_lm', emphasis: true,
-    get: (s) => (s.lm.length ? v(`${s.lm.map(fmtNum).join(' / ')} lm${s.perMeter ? '/m' : ''}`) : none),
+    get: (s) => (s.lm.length ? v(`${s.lm.map(fmtNum).join(s.lmRange ? '~' : ' / ')} lm${s.perMeter ? '/m' : ''}`) : none),
   },
   {
     id: 'efficacy', section: 'light', label: '光效',
@@ -46,11 +46,13 @@ export const ROWS = [
   },
   {
     id: 'cutout', section: 'install', label: '開孔尺寸',
-    get: (s) => (s.cutout ? v(`Ø ${s.cutout} cm`) : none),
+    get: (s) => (s.cutout ? v(`Ø ${s.cutout} cm`) : s.cutoutText ? v(s.cutoutText) : none),
   },
   { id: 'bodySize', section: 'install', label: '燈體尺寸', get: (s) => (s.bodySize ? v(s.bodySize) : none) },
   { id: 'length', section: 'install', label: '長度', get: (s) => (s.length ? v(s.length) : none) },
+  { id: 'mounting', section: 'install', label: '安裝方式', get: (s) => (s.mounting ? v(s.mounting) : none) },
   { id: 'voltage', section: 'install', label: '輸入電壓', get: (s) => (s.voltage ? v(s.voltage) : none) },
+  { id: 'driver', section: 'install', label: '驅動器', get: (s) => (s.driver ? v(s.driver.replace(/；/g, '、')) : none) },
   { id: 'material', section: 'install', label: '燈體材質', get: (s) => (s.material ? v(s.material) : none) },
   {
     id: 'finish', section: 'install', label: '外觀選項',
@@ -71,6 +73,7 @@ export const ROWS = [
     get: (s) => (s.certs.length ? v(s.certs.join('、')) : none),
   },
   { id: 'energy', section: 'cert', label: '節能標章', get: (s) => (s.energyLabel ? v('✓ 節能標章') : none) },
+  { id: 'lifespan', section: 'cert', label: '壽命', get: (s) => (s.lifespan ? v(s.lifespan.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')) : none) },
   { id: 'price', section: 'price', label: '牌價', emphasis: true, get: (s) => v(fmtPrice(s.price)) },
   { id: 'model', section: 'price', label: '型號', get: (s) => v(s.model), noDiff: true },
   { id: 'page', section: 'price', label: '型錄頁碼', get: (s) => (s.catalogPage ? v(`P.${s.catalogPage}`) : none), noDiff: true },

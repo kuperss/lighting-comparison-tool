@@ -105,3 +105,13 @@ describe('buildCatalog', () => {
     expect(r.errors[0]).toMatch(/少於 2 個機型/);
   });
 });
+
+describe('電壓寫法統一', () => {
+  it('全電壓與 DC 空格', async () => {
+    const { voltage } = await import('../catalog.mjs');
+    expect(voltage('100-240V (全電壓)')).toBe('100-240V');
+    expect(voltage('100-240V(全電壓)')).toBe('100-240V');
+    expect(voltage('DC24V (需外接驅動器) 另計')).toBe('DC24V（需外接驅動器）');
+    expect(voltage('DC 24V')).toBe('DC24V');
+  });
+});

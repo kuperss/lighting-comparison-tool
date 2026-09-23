@@ -1,4 +1,5 @@
-// 型錄資料庫 → 前端 catalog 的純函式。只做整理、分組與檢查，不補型錄沒有的數值。
+// 型錄資料庫（＋官網資料）→ 前端 catalog 的純函式。只做整理、合併、分組與檢查，不自行推測數值。
+import { mergeSources } from './official.mjs';
 
 const REQUIRED_FIELDS = ['model', 'product_name', 'catalog_section', 'record_type'];
 
@@ -11,6 +12,19 @@ const FINISH_SUFFIX = [
 
 const asList = (v) => (v == null ? [] : Array.isArray(v) ? v : [v]);
 const num = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+
+// 電壓寫法統一：「100-240V (全電壓)」→「100-240V」（100-240V 即全電壓），「DC 24V」→「DC24V」，去掉結尾「另計」
+export function voltage(text) {
+  const t = tidy(text);
+  if (!t) return null;
+  return t
+    .replace(/\s*[(（]\s*全電壓\s*[)）]/, '')
+    .replace(/\s*另計$/, '')
+    .replace(/\b(AC|DC)\s+(\d)/g, '$1$2')
+    .replace(/\s*[(（]([^)）]*)[)）]/g, '（$1）')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
 
 // 清掉 PDF 轉出的空括號與結尾多餘標點
 export function tidy(text) {
@@ -25,11 +39,14 @@ export function cutoutCm(raw) {
 }
 
 // 型號骨架：去掉外觀字尾，並把色溫字母 W/N/D 換成 *；同機型的 SKU 骨架相同
-export function skeleton(model) {
-  const finish = FINISH_SUFFIX.map(([s]) => s).join('|');
-  return model
+export function skeleton(model, finish = null) {
+  const suffix = FINISH_SUFFIX.map(([s]) => s).join('|');
+  // 官網黑款有時只在型號尾加 B（例如 LED-9DOHUB8DR2B）
+  const half = model.normalize('NFKC');
+  const base = finish === '黑' ? half.replace(/(?<=\d)B$/, '') : half;
+  return base
     .replace(/^(LED|D)-/, '')
-    .replace(new RegExp(`-?(${finish})(?=-|DA$|$)`, 'g'), '')
+    .replace(new RegExp(`-?(${suffix})(?=-|DA$|$)`, 'g'), '')
     .replace(/(?<=[\d-]|\dS)[WND](?=[\dA-Z-]|$)/g, '*');
 }
 
@@ -45,12 +62,12 @@ export function finishOf(p) {
   for (const [suf, label] of FINISH_SUFFIX) {
     if (new RegExp(`(-|\\d)${suf}(?=-|DA$|$)`).test(p.model)) return label;
   }
-  return p.body_color_raw || null;
+  return p.finish_from_name || p.body_color_raw || null;
 }
 
 // 調光 / 控制方式：只依品名、系列、變體中明確寫出的字樣整理
 export function controls(p) {
-  const text = [p.product_name, p.series_name, p.variant].filter(Boolean).join(' ');
+  const text = [p.product_name, p.series_name, p.variant, p.official_name].filter(Boolean).join(' ');
   const out = [];
   if (p.dali_mentioned || /DALI|智慧燈控/.test(text)) out.push('DALI 智慧燈控');
   if (/壁切調光/.test(text)) out.push('壁切調光');
@@ -112,6 +129,8 @@ export function applyCorrections(products, corrections) {
 }
 
 export function matchesCategory(cat, p) {
+  // 只在官網出現的產品依官網分類歸類；型錄產品依型錄分類
+  if (p._source === 'official') return !!cat.officialCategories?.includes(p.official_category);
   if (cat.sections && cat.sections.includes(p.catalog_section)) return true;
   if (cat.nameIncludes && cat.nameIncludes.some((s) => p.product_name.includes(s))) return true;
   return false;
@@ -137,32 +156,40 @@ export function toSku(p, images) {
     cri: num(p.cri_ra),
     r9: num(p.r9_min),
     power,
+    powerRange: !!p.power_range,
     lm,
+    lmRange: !!p.lumen_range,
     perMeter,
     efficacy,
     efficacyDerived: given == null && efficacy != null,
     ledDensity: num(p.led_density_pcs_per_m),
     beam: num(p.beam_angle_deg),
     cutout: cutoutCm(p.cutout),
+    cutoutText: p.cutout_text || null,
     bodySize: p.body_size || p.size || null,
     length: p.length || null,
-    voltage: tidy(p.input_voltage),
+    voltage: voltage(p.input_voltage),
     material: tidy(p.material?.replace(/；/g, '、')),
     ip: p.ip_rating || null,
+    lifespan: p.lifespan || null,
+    driver: p.driver || null,
+    mounting: p.mounting || null,
     certs: asList(p.certifications),
     energyLabel: /節標/.test(`${p.product_name} ${p.series_name}`),
     controls: controls(p),
     price: num(p.list_price),
     catalogPage: p.catalog_page ?? null,
-    image: images[p.model] || null,
+    image: images[p.model] || p.official_image || null,
+    url: p.official_url || null,
+    source: p._source ?? 'catalog',
     corrected: p._corrected?.length ? p._corrected : undefined,
   };
 }
 
 const DESC_FIELDS = [
   ['variant', (r) => (r.variant ? r.variant.replace(/；/g, ' ') : null)],
-  ['cutout', (r) => (cutoutCm(r.cutout) ? `${cutoutCm(r.cutout)}cm` : null)],
-  ['power', (r) => (r.power_w != null ? `${asList(r.power_w).join('/')}W` : null)],
+  ['cutout', (r) => (cutoutCm(r.cutout) ? `${cutoutCm(r.cutout)}cm` : r.cutout_text || null)],
+  ['power', (r) => (r.power_w != null ? `${asList(r.power_w).join(r.power_range ? '~' : '/')}W` : null)],
   ['beam', (r) => (r.beam_angle_deg != null ? `${r.beam_angle_deg}°` : null)],
   ['length', (r) => r.length || null],
   ['ip', (r) => r.ip_rating || null],
@@ -180,14 +207,14 @@ export function buildCategory(cat, products, images) {
   );
   const groups = new Map();
   for (const p of items) {
-    const key = `${p.series_name}|${skeleton(p.model)}`;
+    const key = `${p.series_name}|${skeleton(p.model, finishOf(p))}`;
     if (!groups.has(key)) groups.set(key, { series: p.series_name || p.product_name, rows: [] });
     groups.get(key).rows.push(p);
   }
   // 同機型各 SKU 取第一個非空值當機型代表值（型錄部分 SKU 欄位留空）
   for (const g of groups.values()) {
     g.rep = {};
-    for (const f of ['variant', 'cutout', 'power_w', 'beam_angle_deg', 'length', 'ip_rating']) {
+    for (const f of ['variant', 'cutout', 'cutout_text', 'power_w', 'power_range', 'beam_angle_deg', 'length', 'ip_rating']) {
       g.rep[f] = g.rows.map((r) => r[f]).find((v) => v != null) ?? null;
     }
   }
@@ -222,7 +249,8 @@ export function buildCategory(cat, products, images) {
       });
     });
   }
-  out.sort((a, b) => (a.catalogPage ?? 0) - (b.catalogPage ?? 0));
+  // 型錄產品依型錄頁碼，官網新增的排在後面並依系列排序
+  out.sort((a, b) => (a.catalogPage ?? 1e6) - (b.catalogPage ?? 1e6) || a.series.localeCompare(b.series, 'zh-Hant'));
   const ids = new Map();
   for (const g of out) {
     const n = ids.get(g.id) ?? 0;
@@ -297,7 +325,8 @@ export function popularComparisons(category, featured = []) {
 export function suspiciousGroups(category) {
   const out = [];
   for (const g of category.groups) {
-    const ps = g.skus.flatMap((s) => s.power);
+    // 比較各 SKU 的最大瓦數（調光款、兩段式的單一 SKU 本來就有多個瓦數）
+    const ps = g.skus.filter((s) => s.power.length).map((s) => Math.max(...s.power));
     if (ps.length >= 2 && Math.max(...ps) / Math.min(...ps) > 2) {
       out.push(`${category.label}「${g.name}」各 SKU 瓦數差異大：${g.skus.map((s) => `${s.model}=${s.power.join('/') || '空'}W`).join('、')}`);
     }
@@ -320,10 +349,15 @@ export function parseImages(text, kind) {
   return out;
 }
 
-export function buildCatalog({ src, categories, corrections = [], images = {}, featured = [] }) {
+export function buildCatalog({ src, official = null, categories, corrections = [], images = {}, featured = [] }) {
   const errors = validateSource(src);
+  if (official && !Array.isArray(official.products)) errors.push('官網資料缺少 products 陣列');
   if (errors.length) return { errors };
-  const { products, notes } = applyCorrections(src.products, corrections);
+  const officialCats = new Set(categories.flatMap((c) => c.officialCategories ?? []));
+  const { products: merged, conflicts } = official
+    ? mergeSources(src.products, official.products, officialCats)
+    : { products: src.products, conflicts: [] };
+  const { products, notes } = applyCorrections(merged, corrections);
   const cats = categories.map((c) => buildCategory(c, products, images));
   const warnings = notes.map((n) => n.text);
   for (const c of cats) {
@@ -331,12 +365,14 @@ export function buildCatalog({ src, categories, corrections = [], images = {}, f
     warnings.push(...suspiciousGroups(c));
   }
   const allModels = cats.flatMap((c) => c.groups.flatMap((g) => g.skus.map((s) => s.model)));
-  const missingImages = allModels.filter((m) => !images[m]);
+  const withImage = new Set(cats.flatMap((c) => c.groups.flatMap((g) => g.skus.filter((s) => s.image).map((s) => s.model))));
+  const missingImages = allModels.filter((m) => !withImage.has(m));
   for (const c of cats) c.popular = popularComparisons(c, featured);
   const md = src.metadata || {};
   return {
     errors,
     warnings,
+    conflicts,
     missingImages,
     catalog: {
       source: {
@@ -344,6 +380,7 @@ export function buildCatalog({ src, categories, corrections = [], images = {}, f
         version: md.database_version ?? null,
         verifiedDate: md.verified_date ?? null,
         sourceFile: md.source_file ?? null,
+        official: official?.metadata ? { name: official.metadata.title ?? null, date: official.metadata.generated_at ?? null } : null,
       },
       categories: cats,
     },

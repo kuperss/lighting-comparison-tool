@@ -64,10 +64,11 @@ test('產品列表加入比較匣，跨類別會提醒', async ({ page, isMobile
   await expect(page.locator('.card.is-on')).toHaveCount(1);
 });
 
-test('人工修正的數值有標示', async ({ page, isMobile }) => {
+test('官網資料：範圍值、壽命、官網連結', async ({ page, isMobile }) => {
   test.skip(isMobile, '桌機檢查即可');
-  await page.goto('./?c=ceiling&m=D-CEX45NSW,D-CEX45DSW');
-  const power = page.locator('.grid--row', { hasText: '消耗功率' });
-  await expect(power).toContainText('45W');
-  await expect(power.locator('.corrected')).toHaveCount(1);
+  await page.goto('./?c=ceiling&m=D-CEX45NSW,D-CEC24NSW');
+  await expect(page.locator('.grid--row', { hasText: '消耗功率' })).toContainText('3~45W');
+  await expect(page.locator('.grid--row', { hasText: '消耗功率' })).toContainText('2 / 24W');
+  await expect(page.locator('.grid--row', { hasText: '壽命' })).toContainText('15,000小時');
+  await expect(page.locator('.col__link').first()).toHaveAttribute('href', /dancelight\.com\.tw/);
 });
