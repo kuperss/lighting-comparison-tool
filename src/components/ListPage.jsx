@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { MAX, lookup } from '../lib/catalog.js';
 import { fmtNum, fmtPrice } from '../lib/format.js';
 import { Icon } from './Icons.jsx';
+import Hero from './Hero.jsx';
 import ProductImage from './ProductImage.jsx';
 
 // 產品列表（2g / 2h）：卡片勾選加入比較，底部比較匣（手機為浮動鈕 + 抽屜）
@@ -31,11 +32,9 @@ export default function ListPage({ category, slots, slotCat, actions }) {
   const inTray = (g) => sameCat && slots.some((m) => m && g.skus.some((s) => s.model === m));
 
   return (
+    <>
+    <Hero compact eyebrow="Product collection" title={`${category.label}系列`} sub={`共 ${category.groups.length} 款機型，勾選「比較」加入比較匣`} />
     <main className="page list">
-      <div className="list__head">
-        <h1>{category.label}系列</h1>
-        <span className="muted">共 {category.groups.length} 款機型</span>
-      </div>
       <div className="list__filters">
         <label className="search">
           <Icon name="search" size={16} />
@@ -65,7 +64,7 @@ export default function ListPage({ category, slots, slotCat, actions }) {
                 {g.descriptor && <span className="card__desc">{g.descriptor}</span>}
                 <span className="card__spec muted">
                   {[
-                    s.power.length && `${s.power.join('/')}W${s.perMeter ? '/m' : ''}`,
+                    s.power.length && `${s.power.join(s.powerRange ? '~' : '/')}W${s.perMeter ? '/m' : ''}`,
                     s.lm.length && `${fmtNum(Math.max(...s.lm))}lm`,
                     s.beam && `${s.beam}°`,
                     s.cutout && `開孔 ${s.cutout}cm`,
@@ -150,5 +149,6 @@ export default function ListPage({ category, slots, slotCat, actions }) {
         </>
       )}
     </main>
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { fmtPrice } from '../lib/format.js';
 import { SECTIONS, buildRows } from '../lib/specs.js';
 import { CctPicker, DiffSwitch, FinishPicker, SpecCell, Toolbar } from './CompareParts.jsx';
 import { CategoryIcon, Icon } from './Icons.jsx';
+import Hero from './Hero.jsx';
 import MobileCompare from './MobileCompare.jsx';
 import Picker from './Picker.jsx';
 import ProductImage from './ProductImage.jsx';
@@ -49,6 +50,13 @@ export default function ComparePage({ category, slots, actions }) {
   const common = { category, slots, entries, rows, onlyDiff, setOnlyDiff, collapsed, setCollapsed, picker, setPicker, pickerEl, actions };
 
   return (
+    <>
+    <Hero
+      compact={filledCount > 0}
+      eyebrow="Compare"
+      title={filledCount ? `比較${category.label}機型` : `比較${category.label}`}
+      sub={filledCount ? null : `同類別最多選 ${MAX} 款，規格差異一目了然`}
+    />
     <main className="page compare">
       <PrintHeader category={category} entries={entries} />
       {filledCount === 0 ? (
@@ -59,6 +67,7 @@ export default function ComparePage({ category, slots, actions }) {
         <DesktopCompare {...common} filledCount={filledCount} />
       )}
     </main>
+    </>
   );
 }
 
@@ -95,7 +104,7 @@ function DesktopCompare({ category, slots, entries, rows, onlyDiff, setOnlyDiff,
   return (
     <>
       <div className="compare__title">
-        <h1>比較{category.label}機型</h1>
+        <span className="muted">{filledCount > 1 ? '有差異的規格會以橘色標示' : `再選 1 款即可比較，最多 ${MAX} 款`}</span>
         <div className="compare__tools">
           <DiffSwitch on={onlyDiff} onChange={setOnlyDiff} />
           <Toolbar onCopy={actions.copyList} onShare={actions.share} onPrint={actions.print} disabled={filledCount === 0} />
@@ -214,8 +223,6 @@ function ColumnHead({ index, entry, category, open, onToggle, pickerEl, actions 
 function EmptyCompare({ category, slots, picker, setPicker, pickerEl, actions }) {
   return (
     <div className="empty">
-      <h1>比較{category.label}</h1>
-      <p className="muted">同類別最多選 {MAX} 款，規格差異一目了然</p>
       <div className="empty__slots">
         {slots.map((_, i) => (
           <div className="empty__slot-wrap" key={i}>

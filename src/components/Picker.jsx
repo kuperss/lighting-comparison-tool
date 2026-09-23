@@ -108,7 +108,7 @@ export default function Picker({ category, slots, slotIndex, onPick, onRemove, o
                     <span className="picker__meta">
                       {inCol != null
                         ? `已在第 ${inCol + 1} 欄`
-                        : [s.power.length && `${s.power.join('/')}W`, s.lm.length && `${fmtNum(Math.max(...s.lm))}lm`].filter(Boolean).join(' · ')}
+                        : [s.power.length && `${s.power.join(s.powerRange ? '~' : '/')}W`, s.lm.length && `${fmtNum(Math.max(...s.lm))}lm`].filter(Boolean).join(' · ')}
                     </span>
                   </button>
                 );

@@ -1,12 +1,13 @@
 import { MAX, categories } from '../lib/catalog.js';
+import Hero from './Hero.jsx';
 import { CategoryIcon } from './Icons.jsx';
 
 // 首頁（2i）：先選類別
 export default function Home({ onPick, onList }) {
   return (
+    <>
+    <Hero eyebrow="Product comparison" title="要比較哪一類燈具？" sub={`同類別最多比較 ${MAX} 款，瓦數、光通量、色溫、發光角度一次看清楚`} />
     <main className="page home">
-      <h1>要比較哪一類燈具？</h1>
-      <p className="muted">同類別最多比較 {MAX} 款，瓦數、光通量、色溫、發光角度一次看清楚</p>
       <div className="home__grid">
         {categories.map((c) => (
           <div className="home__card" key={c.id}>
@@ -22,5 +23,6 @@ export default function Home({ onPick, onList }) {
         ))}
       </div>
     </main>
+    </>
   );
 }

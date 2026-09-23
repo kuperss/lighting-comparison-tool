@@ -131,8 +131,8 @@ export default function App() {
           `${lines.length}. ${e.group.name}｜${[
             s.model,
             s.cct.length && `${s.cct.join('/')}K`,
-            s.power.length && `${s.power.join('/')}W${s.perMeter ? '/m' : ''}`,
-            s.lm.length && `${s.lm.map(fmtNum).join('/')}lm`,
+            s.power.length && `${s.power.join(s.powerRange ? '~' : '/')}W${s.perMeter ? '/m' : ''}`,
+            s.lm.length && `${s.lm.map(fmtNum).join(s.lmRange ? '~' : '/')}lm`,
             s.beam && `${s.beam}°`,
             s.cutout && `開孔${s.cutout}cm`,
             fmtPrice(s.price),
@@ -168,6 +168,7 @@ export default function App() {
           <button type="button" className="brand" onClick={() => go({ view: 'home', cat: null })}>
             {site.logo ? <img src={site.logo} alt={site.brand} /> : (
               <span className="brand__word">
+                <span className="brand__mark" aria-hidden="true" />
                 <b>{site.brand}</b>
                 <small>{site.brandEn}</small>
               </span>
