@@ -5,4 +5,6 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  // 單元測試只跑 scripts/；e2e/ 由 Playwright 執行
+  test: { include: ['scripts/**/*.test.mjs'] },
 });
